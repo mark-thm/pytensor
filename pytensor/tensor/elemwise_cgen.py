@@ -111,22 +111,19 @@ def make_checks(loop_orders, dtypes, sub):
         """
         for j, x in to_compare:
             check += f"""
-                if ((%(lv{j})s_n{x} != non1size_dim{x}) && (%(lv{j})s_n{x} != 1))
-                {{
-                    PyErr_Format(PyExc_ValueError, "Input dimension mismatch. One other input has shape[%%i] = %%lld, but input[%%i].shape[%%i] = %%lld.",
-                       {x},
-                       (long long int) non1size_dim{x},
-                       {j},
-                       {x},
-                       (long long int) %(lv{j})s_n{x}
-                    );
-                    %(fail)s
-                }}
-            """
-        check += """
-            }
+            if (%(lv{j0})s_n{x0} != %(lv{j})s_n{x})
+            {{
+                PyErr_Format(PyExc_ValueError, "Input dimension mismatch implicit broadcasting is not supported. (input[%%i].shape[%%i] = %%lld, input[%%i].shape[%%i] = %%lld)",
+                   {j0},
+                   {x0},
+                   (long long int) %(lv{j0})s_n{x0},
+                   {j},
+                   {x},
+                   (long long int) %(lv{j})s_n{x}
+                );
+                %(fail)s
+            }}
         """
-
     return init % sub + check % sub
 
 
